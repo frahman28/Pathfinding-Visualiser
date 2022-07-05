@@ -3,6 +3,7 @@ import Node from './Node/Node';
 import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode} from './GridUtil';
 import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
+import {dfs} from '../Algorithms/dfs';
 
 import './Visualiser.css';
 
@@ -119,6 +120,29 @@ export default class Visualiser extends Component {
     }
   }
 
+  visualiseDfs() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+    const fullGrid = this.state.fullGrid;
+    this.setState({running: true});
+    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
+    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
+    const nodesVisited = dfs(fullGrid, startNode, goalNode);
+    const shortestPath = makeShortestPath(goalNode);
+    for (let i = 0; i <= nodesVisited.length; i++) {
+        if (i === nodesVisited.length) {
+          setTimeout(() => {
+            this.animateShortestPath(shortestPath);
+          }, 10 * i);
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById(`node-${nodesVisited[i].row}-${nodesVisited[i].column}`).className =
+            'node node-visited';
+        }, 10 * i);
+    }
+  }
+
   resetGrid() {
     if (this.state.running || !this.state.completed) return;
     let resetGrid = getAllNodes(this.state.fullGrid);
@@ -178,8 +202,11 @@ export default class Visualiser extends Component {
 
     return (
       <>
-      <button onClick={() => this.visualiseBfs()}>
+        <button onClick={() => this.visualiseBfs()}>
           Visualise BFS Algorithm
+        </button>
+        <button onClick={() => this.visualiseDfs()}>
+          Visualise DFS Algorithm
         </button>
         <button onClick={() => this.visualiseDijkstra()}>
           Visualise Dijkstra's Algorithm

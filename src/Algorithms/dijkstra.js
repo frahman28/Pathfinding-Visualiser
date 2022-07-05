@@ -1,5 +1,5 @@
 import {getAllNodes} from '../Visualiser/GridUtil';
-import {updateUnvisitedNeighbours, makeShortestPath} from './algoUtil';
+import {makeShortestPath} from './algoUtil';
 
 // Performs Dijkstra's algorithm; returns *all* nodes in the order
 // in which they were visited. Also makes nodes point back to their
@@ -23,6 +23,24 @@ function dijkstra(grid, startNode, goalNode) {
       if (nearestNode === goalNode) return visitedNodes;
       updateUnvisitedNeighbours(nearestNode, grid);
     }
+  }
+
+  function updateUnvisitedNeighbours(node, grid) {
+    const unvisitedNeighbours = getUnvisitedNeighbours(node, grid);
+    for (const neighbour of unvisitedNeighbours) {
+      neighbour.distance = node.distance + 1;
+      neighbour.previousNode = node;
+    }
+  }
+  
+  function getUnvisitedNeighbours(node, grid) {
+    const neighbours = [];
+    const {column, row} = node;
+    if (row > 0) neighbours.push(grid[row - 1][column]);
+    if (row < grid.length - 1) neighbours.push(grid[row + 1][column]);
+    if (column > 0) neighbours.push(grid[row][column - 1]);
+    if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
+    return neighbours.filter(neighbour => !neighbour.isVisited);
   }
 
 export {dijkstra, makeShortestPath};
