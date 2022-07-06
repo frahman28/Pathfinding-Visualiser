@@ -1,4 +1,29 @@
+.container {
+  background-color: #f6f6f2;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.navbar.navbar-default {
+  padding: 1em;
+  background-color: #388087;
+  align-items: center;
+}
+
+.btn.btn-primary {
+  outline: 1px solid #c2edce;
+  border-color: #c2edce;
+  color: #c2edce;
+  background-color: #388087;
+}
+
+.btn.btn-primary:hover {
+  color: #388087;
+  background-color: #c2edce;
+}
+
 .App {
+  background-color: #f6f6f2;
   text-align: center;
 }
 
