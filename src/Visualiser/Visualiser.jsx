@@ -5,9 +5,7 @@ import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
-
 import './Visualiser.css';
-
 
 export default class Visualiser extends Component {
   constructor() {
@@ -248,6 +246,9 @@ export default class Visualiser extends Component {
     return (
       <>
         <div className="navbar navbar-default">
+        <button className="btn btn-primary" onClick={() => this.visualise()}>
+          Guide
+        </button>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-primary">
           <input type="radio" name="option" id="bfs" autocomplete="off"/> BFS
