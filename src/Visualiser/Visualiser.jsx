@@ -5,6 +5,7 @@ import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
+import Example from '../Guide';
 import './Visualiser.css';
 
 export default class Visualiser extends Component {
@@ -249,7 +250,7 @@ export default class Visualiser extends Component {
     return (
       <>
         <div className="navbar navbar-default">
-        <button className="btn btn-primary" onClick={() => this.visualise()}>
+        <button className="btn btn-primary" onClick={() => <Example />}>
           Guide
         </button>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
