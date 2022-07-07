@@ -12,6 +12,7 @@ function dijkstra(grid, startNode, goalNode) {
     while (!!unvisitedNodes.length) {
       console.log(unvisitedNodes.length);
       unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+      //unvisitedNodes.sort((nodeA, nodeB) => nodeB.column - nodeA.column);
       const nearestNode = unvisitedNodes.shift();
       // If we encounter a wall, we skip it.
       if (nearestNode.isWall) continue;
@@ -38,8 +39,8 @@ function dijkstra(grid, startNode, goalNode) {
     const {column, row} = node;
     if (row > 0) neighbours.push(grid[row - 1][column]);
     if (row < grid.length - 1) neighbours.push(grid[row + 1][column]);
-    if (column > 0) neighbours.push(grid[row][column - 1]);
     if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
+    if (column > 0) neighbours.push(grid[row][column - 1]);
     return neighbours.filter(neighbour => !neighbour.isVisited);
   }
 

@@ -6,6 +6,7 @@ import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
 import Example from '../Guide';
+import {astar} from '../Algorithms/astar';
 import './Visualiser.css';
 
 export default class Visualiser extends Component {
@@ -169,6 +170,31 @@ export default class Visualiser extends Component {
     }
   }
 
+  visualiseAstar() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+    let fullGrid = this.state.fullGrid;
+    this.setState({running: true});
+    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
+    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
+    const nodesVisited = astar(fullGrid, startNode, goalNode);
+    console.log(nodesVisited);
+    const shortestPath = makeShortestPath(goalNode);
+    console.log(shortestPath);
+    for (let i = 0; i <= nodesVisited.length; i++) {
+        if (i === nodesVisited.length) {
+          setTimeout(() => {
+            this.animateShortestPath(shortestPath);
+          }, 10 * i);
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById(`node-${nodesVisited[i].row}-${nodesVisited[i].column}`).className =
+            'node node-visited';
+        }, 10 * i);
+    }
+  }
+
   visualise() {
     if (this.state.completed) return;
     if (this.state.running) return;
@@ -182,7 +208,7 @@ export default class Visualiser extends Component {
     } else if (document.getElementById("dijkstra").checked === true) {
       this.visualiseDijkstra(); 
     } else if (document.getElementById("astar").checked === true) {
-      this.visualiseDijkstra(); 
+      this.visualiseAstar(); 
     } else if (document.getElementById("bidirection").checked === true) {
       this.visualiseDijkstra(); 
     } else {
