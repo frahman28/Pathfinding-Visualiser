@@ -105,6 +105,7 @@ export default class Visualiser extends Component {
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = bfs(fullGrid, startNode, goalNode);
     const shortestPath = makeShortestPath(goalNode);
+    console.log(shortestPath);
     for (let i = 0; i <= nodesVisited.length; i++) {
         if (i === nodesVisited.length) {
           setTimeout(() => {
@@ -145,12 +146,14 @@ export default class Visualiser extends Component {
   visualiseGreedy() {
     if (this.state.completed) return;
     if (this.state.running) return;
-    const fullGrid = this.state.fullGrid;
+    let fullGrid = this.state.fullGrid;
     this.setState({running: true});
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = greedy(fullGrid, startNode, goalNode);
+    console.log(nodesVisited);
     const shortestPath = makeShortestPath(goalNode);
+    console.log(shortestPath);
     for (let i = 0; i <= nodesVisited.length; i++) {
         if (i === nodesVisited.length) {
           setTimeout(() => {
