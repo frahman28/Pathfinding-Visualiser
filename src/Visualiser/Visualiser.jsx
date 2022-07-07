@@ -4,9 +4,8 @@ import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reco
 import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
-
+import {greedy} from '../Algorithms/greedy';
 import './Visualiser.css';
-
 
 export default class Visualiser extends Component {
   constructor() {
@@ -143,6 +142,50 @@ export default class Visualiser extends Component {
     }
   }
 
+  visualiseGreedy() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+    const fullGrid = this.state.fullGrid;
+    this.setState({running: true});
+    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
+    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
+    const nodesVisited = greedy(fullGrid, startNode, goalNode);
+    const shortestPath = makeShortestPath(goalNode);
+    for (let i = 0; i <= nodesVisited.length; i++) {
+        if (i === nodesVisited.length) {
+          setTimeout(() => {
+            this.animateShortestPath(shortestPath);
+          }, 10 * i);
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById(`node-${nodesVisited[i].row}-${nodesVisited[i].column}`).className =
+            'node node-visited';
+        }, 10 * i);
+    }
+  }
+
+  visualise() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+
+    if (document.getElementById("bfs").checked === true) {
+      this.visualiseBfs();
+    } else if (document.getElementById("dfs").checked === true) {
+      this.visualiseDfs();
+    } else if (document.getElementById("greedy").checked === true) {
+      this.visualiseGreedy();
+    } else if (document.getElementById("dijkstra").checked === true) {
+      this.visualiseDijkstra(); 
+    } else if (document.getElementById("astar").checked === true) {
+      this.visualiseDijkstra(); 
+    } else if (document.getElementById("bidirection").checked === true) {
+      this.visualiseDijkstra(); 
+    } else {
+      alert("Select an Algorithm");
+    }
+  }
+
   resetGrid() {
     if (this.state.running || !this.state.completed) return;
     let resetGrid = getAllNodes(this.state.fullGrid);
@@ -198,22 +241,45 @@ export default class Visualiser extends Component {
   }
 
   render() {
-    const {fullGrid, running, mouseIsPressed} = this.state;
+    const {fullGrid, mouseIsPressed} = this.state;
 
     return (
       <>
-        <button onClick={() => this.visualiseBfs()}>
-          Visualise BFS Algorithm
+        <div className="navbar navbar-default">
+        <button className="btn btn-primary" onClick={() => this.visualise()}>
+          Guide
         </button>
-        <button onClick={() => this.visualiseDfs()}>
-          Visualise DFS Algorithm
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="bfs" autocomplete="off"/> BFS
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="dfs" autocomplete="off"/> DFS
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="greedy" autocomplete="off"/> Greedy 
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="dijkstra" autocomplete="off"/> Dijkstra's
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="astar" autocomplete="off"/> A-Star
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="bidirection" autocomplete="off"/> Bi-directional
+        </label>
+        </div>
+        <button className="btn btn-primary" onClick={() => this.visualise()}>
+          Visualise Algorithm
         </button>
-        <button onClick={() => this.visualiseDijkstra()}>
-          Visualise Dijkstra's Algorithm
+        <button className="btn btn-primary" onClick={() => this.visualise()}>
+          Generate Random Map
         </button>
-        <button onClick={() => this.resetGrid()}>
+        <button  className="btn btn-primary" onClick={() => this.resetGrid()}>
           Clear Grid
         </button>
+        </div>
+        <div className="container">
         <div className="grid">
           {fullGrid.map((row, rowIdx) => {
             return (
@@ -237,6 +303,7 @@ export default class Visualiser extends Component {
               </div>
             );
           })}
+        </div>
         </div>
       </>
     );
