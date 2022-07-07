@@ -7,6 +7,7 @@ import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
 import Example from '../Guide';
 import {astar} from '../Algorithms/astar';
+import { expandStart, expandGoal, expandBoth } from '../Algorithms/bi-directional';
 import './Visualiser.css';
 
 export default class Visualiser extends Component {
@@ -195,6 +196,72 @@ export default class Visualiser extends Component {
     }
   }
 
+  visualiseBidirectional() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+    let fullGrid = this.state.fullGrid;
+    this.setState({running: true});
+    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
+    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
+    const nodesVisitedStart = expandStart(fullGrid, startNode, goalNode);
+    const nodesVisitedGoal = expandGoal(fullGrid, startNode, goalNode);
+    const shortestPathStart = makeShortestPath(goalNode);
+    const shortestPathGoal = makeShortestPath(startNode);
+    for (let i = 0; i <= nodesVisitedGoal.length; i++) {
+        let j = i;
+        if (i === nodesVisitedStart.length) {
+          setTimeout(() => {
+            this.animateShortestPath(shortestPathStart);
+          }, 10 * i);
+          return;
+        }
+        setTimeout(() => {
+          document.getElementById(`node-${nodesVisitedStart[i].row}-${nodesVisitedStart[i].column}`).className =
+            'node node-visited';
+            document.getElementById(`node-${nodesVisitedGoal[i].row}-${nodesVisitedGoal[i].column}`).className =
+            'node node-visited';
+        }, 10 * i);
+    }
+  }
+
+  visualiseBd() {
+    if (this.state.completed) return;
+    if (this.state.running) return;
+    let fullGrid = this.state.fullGrid;
+    this.setState({running: true});
+    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
+    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
+    const shortestPathStart = makeShortestPath(goalNode);
+    const nodesVisited = expandBoth(fullGrid, startNode, goalNode);
+    let i = 0;
+    let j = 0;
+    while ( nodesVisited[0][0] !== nodesVisited[1][0] && nodesVisited[0][i] !== undefined && nodesVisited[1][i] !== undefined && nodesVisited[0].length !== i && nodesVisited[1].length !== j) {
+      console.log(nodesVisited[0][i].row);
+      if (i === nodesVisited[0].length) {
+        setTimeout(() => {
+          this.animateShortestPath(shortestPathStart);
+        }, 10 * i);
+        return;
+      }
+      let row = nodesVisited[0][i].row;
+      let column = nodesVisited[0][i].column;
+      setTimeout(() => {
+        document.getElementById(`node-${row}-${column}`).className =
+          'node node-visited';
+          document.getElementById(`node-${nodesVisited[1][j].row}-${nodesVisited[1][j].column}`).className =
+          'node node-visited';
+      }, 10 * i);
+      if (nodesVisited[0][i + 1] !== undefined) {
+        i++;
+      }
+      if (nodesVisited[1][j + 1] !== undefined) {
+        j++;
+      }
+    }
+    console.log(nodesVisited[0][0] !== nodesVisited[1][0]);
+    console.log(nodesVisited[1][0].row);
+  }
+
   visualise() {
     if (this.state.completed) return;
     if (this.state.running) return;
@@ -210,7 +277,7 @@ export default class Visualiser extends Component {
     } else if (document.getElementById("astar").checked === true) {
       this.visualiseAstar(); 
     } else if (document.getElementById("bidirection").checked === true) {
-      this.visualiseDijkstra(); 
+      this.visualiseBd(); 
     } else {
       alert("Select an Algorithm");
     }
