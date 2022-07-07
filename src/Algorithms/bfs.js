@@ -19,10 +19,10 @@ export function bfs(grid, startNode, goalNode) {
 function getNearestNodes(node, grid) {
     let neighbours = []
     const {column, row} = node;
-    if (row > 0) neighbours.push(grid[row - 1][column]);
-    if (row < grid.length - 1) neighbours.push(grid[row + 1][column]);
     if (column > 0) neighbours.push(grid[row][column - 1]);
     if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
+    if (row > 0) neighbours.push(grid[row - 1][column]);
+    if (row < grid.length - 1) neighbours.push(grid[row + 1][column]);
     neighbours = neighbours.filter(neighbour => !neighbour.isVisited);
     for (const neighbour of neighbours) {
         neighbour.previousNode = node;
