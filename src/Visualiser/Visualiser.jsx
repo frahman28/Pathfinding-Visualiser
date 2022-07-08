@@ -5,7 +5,6 @@ import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
-import Example from '../Guide';
 import {astar} from '../Algorithms/astar';
 import { expandStart, expandGoal, expandBoth } from '../Algorithms/bi-directional';
 import './Visualiser.css';
