@@ -342,7 +342,7 @@ export default class Visualiser extends Component {
     return (
       <>
         <div className="navbar navbar-default">
-        <button className="btn btn-primary" onClick={() => <Example />}>
+        <button className="btn btn-primary" onClick={() => this.visualiseAstar()}>
           Guide
         </button>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
