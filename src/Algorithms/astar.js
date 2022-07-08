@@ -1,6 +1,7 @@
 export function astar(grid, startNode, goalNode) {
     const visitedNodes = [];
     startNode.distance = heuristic(grid, startNode, goalNode);
+    startNode.pathCost = 0;
     console.log(startNode);
     let queue = [startNode];
     while (queue.length !== 0) {
@@ -25,16 +26,24 @@ export function astar(grid, startNode, goalNode) {
 function getNearestNodes(node, grid, goalNode, startNode, queue) {
     let neighbours = []
     const {column, row} = node;
-    if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
     if (row < grid.length - 1) neighbours.push(grid[row - 1][column]);
+    if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
     if (row > 0) neighbours.push(grid[row + 1][column]);
     if (column > 0) neighbours.push(grid[row][column - 1]);
     const q = new Set(queue);
     for (const neighbour of neighbours) {
+        if (neighbour.isVisited) continue;
+        let pathCost = node.pathCost + 1;
+        if (pathCost >= neighbour.pathCost) continue;
+        neighbour.pathCost = pathCost;
+        neighbour.distance = pathCost + heuristic(grid, neighbour, goalNode);
+        neighbour.previousNode = node;
+        /*
         if (q.has(neighbour)) continue;
         neighbour.distance = g(grid, neighbour, startNode) + heuristic(grid, neighbour, goalNode) + node.distance;
         if (neighbour.isVisited) continue;
         neighbour.previousNode = node;
+        */
     }
     return neighbours;
 }
