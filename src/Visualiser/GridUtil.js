@@ -10,6 +10,7 @@ const makeNode = function(column, row) {
       isStart: row === START_NODE_ROW && column === START_NODE_COLUMN,
       isGoal: row === GOAL_NODE_ROW && column === GOAL_NODE_COLUMN,
       distance: Infinity,
+      pathCost: Infinity,
       isVisited: false,
       isWall: false,
       previousNode: null,
