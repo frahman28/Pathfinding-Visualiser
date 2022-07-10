@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Pathfinding-Visualiser/static/css/main.9c406ffc.css",
-    "main.js": "/Pathfinding-Visualiser/static/js/main.4ab92097.js",
+    "main.js": "/Pathfinding-Visualiser/static/js/main.64ae07bb.js",
     "static/js/787.3ea40940.chunk.js": "/Pathfinding-Visualiser/static/js/787.3ea40940.chunk.js",
     "index.html": "/Pathfinding-Visualiser/index.html",
     "main.9c406ffc.css.map": "/Pathfinding-Visualiser/static/css/main.9c406ffc.css.map",
-    "main.4ab92097.js.map": "/Pathfinding-Visualiser/static/js/main.4ab92097.js.map",
+    "main.64ae07bb.js.map": "/Pathfinding-Visualiser/static/js/main.64ae07bb.js.map",
     "787.3ea40940.chunk.js.map": "/Pathfinding-Visualiser/static/js/787.3ea40940.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9c406ffc.css",
-    "static/js/main.4ab92097.js"
+    "static/js/main.64ae07bb.js"
   ]
 }
