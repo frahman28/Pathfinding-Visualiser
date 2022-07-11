@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode} from './GridUtil';
-import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
+import {dijkstra, makeShortestPath, makeShortestPathBD} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
@@ -202,18 +202,22 @@ export default class Visualiser extends Component {
     this.setState({running: true});
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
-    const nodesVisitedStart = expandStart(fullGrid, startNode, goalNode);
-    const nodesVisitedGoal = expandGoal(fullGrid, startNode, goalNode);
-    const shortestPathStart = makeShortestPath(goalNode);
+    const allNodesVisited = expandBoth(fullGrid, startNode, goalNode);
+    const nodesVisitedStart = allNodesVisited[0];//expandStart(fullGrid, startNode, goalNode);
+    const nodesVisitedGoal = allNodesVisited[1];//expandGoal(fullGrid, startNode, goalNode);
+    const shortestPathStart = makeShortestPathBD(goalNode, startNode);
     const shortestPathGoal = makeShortestPath(startNode);
+    console.log(nodesVisitedGoal);
+    console.log(nodesVisitedStart);
     for (let i = 0; i <= nodesVisitedGoal.length; i++) {
         let j = i;
-        if (i === nodesVisitedStart.length) {
+        if (i === nodesVisitedGoal.length) {
           setTimeout(() => {
             this.animateShortestPath(shortestPathStart);
           }, 10 * i);
           return;
         }
+        console.log(nodesVisitedGoal[i]);
         setTimeout(() => {
           document.getElementById(`node-${nodesVisitedStart[i].row}-${nodesVisitedStart[i].column}`).className =
             'node node-visited';
@@ -230,7 +234,7 @@ export default class Visualiser extends Component {
     this.setState({running: true});
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
-    const shortestPathStart = makeShortestPath(goalNode);
+    const shortestPathStart = makeShortestPathBD(goalNode, startNode);
     const nodesVisited = expandBoth(fullGrid, startNode, goalNode);
     let i = 0;
     let j = 0;
@@ -276,7 +280,7 @@ export default class Visualiser extends Component {
     } else if (document.getElementById("astar").checked === true) {
       this.visualiseAstar(); 
     } else if (document.getElementById("bidirection").checked === true) {
-      this.visualiseBd(); 
+      this.visualiseBidirectional(); 
     } else {
       alert("Select an Algorithm");
     }
@@ -362,7 +366,7 @@ export default class Visualiser extends Component {
           <input type="radio" name="option" id="astar" autocomplete="off"/> A-Star
         </label>
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="bidirection" autocomplete="off"/> Bi-directional
+          <input type="radio" name="option" id="bidirection" autocomplete="off"/> Bi-directional BFS
         </label>
         </div>
         <button className="btn btn-primary" onClick={() => this.visualise()}>

@@ -11,8 +11,10 @@ const makeNode = function(column, row) {
       isGoal: row === GOAL_NODE_ROW && column === GOAL_NODE_COLUMN,
       distance: Infinity,
       pathCost: Infinity,
+      heuristic: Infinity,
       isVisited: false,
       isWall: false,
+      order: null,
       previousNode: null,
     };
 };
@@ -43,9 +45,11 @@ const makeGridWithWalls = function(grid, row, column, running) {
 };
 
 const moveStartNode = function(grid, row, column, running) {
+    if (row === GOAL_NODE_ROW && column === GOAL_NODE_COLUMN) return;
     if (running) return;
     const newGrid = grid.slice();
     let node = newGrid[row][column];
+    if (node.isWall) return;
     let newNode = {
         ...node,
         isStart: !node.isStart,
@@ -57,9 +61,11 @@ const moveStartNode = function(grid, row, column, running) {
 }
 
 const moveGoalNode = function(grid, row, column, running) {
+  if (row === START_NODE_ROW && column === START_NODE_COLUMN) return;
   if (running) return;
   const newGrid = grid.slice();
   let node = newGrid[row][column];
+  if (node.isWall) return;
   let newNode = {
       ...node,
       isGoal: !node.isGoal,

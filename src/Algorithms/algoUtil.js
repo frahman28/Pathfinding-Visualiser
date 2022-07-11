@@ -8,9 +8,25 @@
     while (currentNode !== null) {
       shortestPath.unshift(currentNode);
       currentNode = currentNode.previousNode;
+      console.log(currentNode);
     }
     console.log(shortestPath);
     return shortestPath;
   }
 
-  export {makeShortestPath};
+  function makeShortestPathBD(goalNode, startNode) {
+    console.log(goalNode);
+    const shortestPath = [];
+    let currentNode = goalNode;
+    let previous = startNode;
+    while (currentNode !== startNode) {
+      shortestPath.unshift(currentNode);
+      currentNode = currentNode.previousNode;
+      previous = currentNode;
+      console.log(currentNode);
+    }
+    console.log(shortestPath);
+    return shortestPath;
+  }
+
+  export {makeShortestPath, makeShortestPathBD};

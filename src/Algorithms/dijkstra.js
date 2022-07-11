@@ -1,5 +1,5 @@
 import {getAllNodes} from '../Visualiser/GridUtil';
-import {makeShortestPath} from './algoUtil';
+import {makeShortestPath, makeShortestPathBD} from './algoUtil';
 
 // Performs Dijkstra's algorithm; returns *all* nodes in the order
 // in which they were visited. Also makes nodes point back to their
@@ -44,4 +44,4 @@ function dijkstra(grid, startNode, goalNode) {
     return neighbours.filter(neighbour => !neighbour.isVisited);
   }
 
-export {dijkstra, makeShortestPath};
+export {dijkstra, makeShortestPath, makeShortestPathBD};
