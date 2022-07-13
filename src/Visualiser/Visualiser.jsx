@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
-import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode} from './GridUtil';
+import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, reconstructGridWithWalls, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode} from './GridUtil';
 import {dijkstra, makeShortestPath, makeShortestPathBD} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
 import {astar} from '../Algorithms/astar';
-import { expandStart, expandGoal, expandBoth } from '../Algorithms/bi-directional';
+import {ModalDialog} from '../Guide';
 import './Visualiser.css';
+
+let currentAlgo = null;
 
 export default class Visualiser extends Component {
   constructor() {
@@ -16,6 +18,7 @@ export default class Visualiser extends Component {
       fullGrid: [],
       running: false,
       completed: false,
+      mapped: false,
       movingStart: false,
       movingGoal: false,
       mouseIsPressed: false,
@@ -53,6 +56,7 @@ export default class Visualiser extends Component {
         newGrid = moveGoalNode(this.state.fullGrid, row, column);
     } else {
         newGrid = makeGridWithWalls(this.state.fullGrid, row, column);
+        this.setState({mapped: true})
     }
     this.setState({fullGrid: newGrid});
     this.redraw();
@@ -71,7 +75,7 @@ export default class Visualiser extends Component {
       }, 50 * i);
     }
     const lastAnim = document.getElementById(`node-${shortestPath[shortestPath.length-1].row}-${shortestPath[shortestPath.length-1].column}`);
-    lastAnim.addEventListener('animationend', () => {this.setState({running: false, completed: true})});
+    lastAnim.addEventListener('animationend', () => {this.setState({running: false, completed: true, mapped: true})});
   }
 
   visualiseDijkstra() {
@@ -195,102 +199,91 @@ export default class Visualiser extends Component {
     }
   }
 
-  visualiseBidirectional() {
-    if (this.state.completed) return;
-    if (this.state.running) return;
-    let fullGrid = this.state.fullGrid;
-    this.setState({running: true});
-    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
-    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
-    const allNodesVisited = expandBoth(fullGrid, startNode, goalNode);
-    const nodesVisitedStart = allNodesVisited[0];//expandStart(fullGrid, startNode, goalNode);
-    const nodesVisitedGoal = allNodesVisited[1];//expandGoal(fullGrid, startNode, goalNode);
-    const shortestPathStart = makeShortestPathBD(goalNode, startNode);
-    const shortestPathGoal = makeShortestPath(startNode);
-    console.log(nodesVisitedGoal);
-    console.log(nodesVisitedStart);
-    for (let i = 0; i <= nodesVisitedGoal.length; i++) {
-        let j = i;
-        if (i === nodesVisitedGoal.length) {
-          setTimeout(() => {
-            this.animateShortestPath(shortestPathStart);
-          }, 10 * i);
-          return;
-        }
-        console.log(nodesVisitedGoal[i]);
-        setTimeout(() => {
-          document.getElementById(`node-${nodesVisitedStart[i].row}-${nodesVisitedStart[i].column}`).className =
-            'node node-visited';
-            document.getElementById(`node-${nodesVisitedGoal[i].row}-${nodesVisitedGoal[i].column}`).className =
-            'node node-visited';
-        }, 10 * i);
-    }
-  }
-
-  visualiseBd() {
-    if (this.state.completed) return;
-    if (this.state.running) return;
-    let fullGrid = this.state.fullGrid;
-    this.setState({running: true});
-    let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
-    let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
-    const shortestPathStart = makeShortestPathBD(goalNode, startNode);
-    const nodesVisited = expandBoth(fullGrid, startNode, goalNode);
-    let i = 0;
-    let j = 0;
-    while ( nodesVisited[0][0] !== nodesVisited[1][0] && nodesVisited[0][i] !== undefined && nodesVisited[1][i] !== undefined && nodesVisited[0].length !== i && nodesVisited[1].length !== j) {
-      console.log(nodesVisited[0][i].row);
-      if (i === nodesVisited[0].length) {
-        setTimeout(() => {
-          this.animateShortestPath(shortestPathStart);
-        }, 10 * i);
-        return;
-      }
-      let row = nodesVisited[0][i].row;
-      let column = nodesVisited[0][i].column;
-      setTimeout(() => {
-        document.getElementById(`node-${row}-${column}`).className =
-          'node node-visited';
-          document.getElementById(`node-${nodesVisited[1][j].row}-${nodesVisited[1][j].column}`).className =
-          'node node-visited';
-      }, 10 * i);
-      if (nodesVisited[0][i + 1] !== undefined) {
-        i++;
-      }
-      if (nodesVisited[1][j + 1] !== undefined) {
-        j++;
-      }
-    }
-    console.log(nodesVisited[0][0] !== nodesVisited[1][0]);
-    console.log(nodesVisited[1][0].row);
-  }
-
   visualise() {
-    if (this.state.completed) return;
+    //if (this.state.completed) return;
     if (this.state.running) return;
 
+    
     if (document.getElementById("bfs").checked === true) {
+      currentAlgo = "bfs";
       this.visualiseBfs();
     } else if (document.getElementById("dfs").checked === true) {
+      currentAlgo = "dfs";
       this.visualiseDfs();
     } else if (document.getElementById("greedy").checked === true) {
+      currentAlgo = "greedy";
       this.visualiseGreedy();
     } else if (document.getElementById("dijkstra").checked === true) {
+      currentAlgo = "dijkstra";
       this.visualiseDijkstra(); 
     } else if (document.getElementById("astar").checked === true) {
+      currentAlgo = "astar";
       this.visualiseAstar(); 
     } else if (document.getElementById("bidirection").checked === true) {
       this.visualiseBidirectional(); 
     } else {
       alert("Select an Algorithm");
     }
+
+    this.setState({running: true})
+  }
+
+  setMap() {
+    if (this.state.running || this.state.completed) return;
+
+    const grid = this.state.fullGrid;
+
+    let count = 0;
+
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        if (grid[i][j].isWall) {
+          const node = {
+            ...grid[i][j],
+            isWall: false
+          }
+          grid[i][j] = node;
+          count++;
+        }
+      }
+    }
+
+
+    this.generateMap();
+
+    console.log(count);
+  }
+
+  generateMap() {
+    if (this.state.running || this.state.completed) return;
+    let grid  = this.state.fullGrid;
+    for (let row = 0; row < grid.length; row++) {
+      for (let column = 0; column < grid[row].length; column++) {
+        let chance = Math.floor(Math.random() * (11 - 1 + 1) + 1);
+        if (chance === 10 || chance === 9) {
+          console.log(row, column);
+          makeGridWithWalls(this.state.fullGrid, row, column);
+        }
+      }
+    }
+    this.setState({fullGrid: grid, mapped: true});
+    this.redraw();
   }
 
   resetGrid() {
-    if (this.state.running || !this.state.completed) return;
+    if (this.state.running) return;
     let resetGrid = getAllNodes(this.state.fullGrid);
-    const fullGrid = reconstructGrid();
-    
+    let fullGrid = reconstructGrid(this.state.fullGrid);
+    if (document.getElementById("keepWalls").checked === true) {
+      fullGrid = reconstructGridWithWalls(this.state.fullGrid);
+    } else if (document.getElementById("clearWalls").checked === true) {
+      fullGrid = reconstructGrid(this.state.fullGrid);
+    } else {
+      alert("Select Clear Type");
+      return;
+    }
+    console.log(fullGrid);
+    currentAlgo = null;
     for (let i = 0; i < resetGrid.length; i++) {
         if (resetGrid[i].isWall) {
             document.getElementById(`node-${resetGrid[i].row}-${resetGrid[i].column}`).className =
@@ -307,7 +300,7 @@ export default class Visualiser extends Component {
         }
     }
     
-    this.setState({fullGrid: fullGrid, completed: false});
+    this.setState({fullGrid: fullGrid, completed: false, mapped: false});
   }
 
   redraw() {
@@ -349,32 +342,37 @@ export default class Visualiser extends Component {
         <button className="btn btn-primary" onClick={() => this.visualiseAstar()}>
           Guide
         </button>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" id="algoType">
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="bfs" autocomplete="off"/> BFS
+          <input type="radio" name="algorithm" id="bfs" autocomplete="off"/> BFS
         </label>
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="dfs" autocomplete="off"/> DFS
+          <input type="radio" name="algorithm" id="dfs" autocomplete="off"/> DFS
         </label>
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="greedy" autocomplete="off"/> Greedy 
+          <input type="radio" name="algorithm" id="greedy" autocomplete="off"/> Greedy 
         </label>
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="dijkstra" autocomplete="off"/> Dijkstra's
+          <input type="radio" name="algorithm" id="dijkstra" autocomplete="off"/> Dijkstra's
         </label>
         <label class="btn btn-primary">
-          <input type="radio" name="option" id="astar" autocomplete="off"/> A-Star
-        </label>
-        <label class="btn btn-primary">
-          <input type="radio" name="option" id="bidirection" autocomplete="off"/> Bi-directional BFS
+          <input type="radio" name="algorithm" id="astar" autocomplete="off"/> A-Star
         </label>
         </div>
         <button className="btn btn-primary" onClick={() => this.visualise()}>
           Visualise Algorithm
         </button>
-        <button className="btn btn-primary" onClick={() => this.visualise()}>
+        <button className="btn btn-primary" onClick={() => this.setMap()}>
           Generate Random Map
         </button>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons" id="clearType">
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="keepWalls" autocomplete="off"/> Keep Walls
+        </label>
+        <label class="btn btn-primary">
+          <input type="radio" name="option" id="clearWalls" autocomplete="off"/> Clear Walls
+        </label>
+        </div>
         <button  className="btn btn-primary" onClick={() => this.resetGrid()}>
           Clear Grid
         </button>

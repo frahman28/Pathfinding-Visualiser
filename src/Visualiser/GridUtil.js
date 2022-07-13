@@ -30,6 +30,27 @@ const reconstructGrid = function() {
     }
     return grid;
 };
+
+const reconstructGridWithWalls = function(oldGrid) {
+  const grid = [];
+  for (let row = 0; row < oldGrid.length; row++) {
+    const currentRow = [];
+    for (let column = 0; column < oldGrid[row].length; column++) {
+      if (oldGrid[row][column].isWall) {
+        let node = makeNode(column, row);
+        let newNode = {
+          ...node,
+          isWall: true
+        }
+        currentRow.push(newNode);
+      } else {
+        currentRow.push(makeNode(column, row));
+      }
+    }
+    grid.push(currentRow);
+  }
+  return grid;
+};
   
 const makeGridWithWalls = function(grid, row, column, running) {
     if (running) return;
@@ -86,4 +107,4 @@ const getAllNodes = function getAllNodes(grid) {
     return nodes;
 };
 
-export{START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, makeNode, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode};
+export{START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, reconstructGridWithWalls, makeNode, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode};

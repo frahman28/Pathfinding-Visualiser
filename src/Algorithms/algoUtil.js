@@ -19,10 +19,10 @@
     const shortestPath = [];
     let currentNode = goalNode;
     let previous = startNode;
-    while (currentNode !== startNode) {
+    while (currentNode !== null) {
       shortestPath.unshift(currentNode);
-      currentNode = currentNode.previousNode;
       previous = currentNode;
+      currentNode = currentNode.previousNode;
       console.log(currentNode);
     }
     console.log(shortestPath);

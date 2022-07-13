@@ -5,9 +5,9 @@ export function expandBoth(grid, startNode, goalNode) {
     let queueStart = [startNode];
     let queueGoal = [goalNode];
     while (queueStart.length !== 0 && queueGoal.length !== 0) {
+        startNode.previousNode = null;
         let nearestNodeStart = queueStart.shift();
         let nearestNodeGoal = queueGoal.shift();
-        //console.log(nearestNodeGoal);
         if (nearestNodeStart.isWall) continue;
         if (nearestNodeGoal.isWall) continue;
         nearestNodeStart.isVisited = true;
@@ -20,16 +20,23 @@ export function expandBoth(grid, startNode, goalNode) {
         visitedNodesGoal = visitedNodesGoal.concat(childrenNodesGoal);
         visitedNodes[0].push(nearestNodeStart);
         visitedNodes[1].push(nearestNodeGoal);
-        let overlap = checkOverlap(visitedNodes[0], visitedNodes[1]);
+        let overlap = checkOverlap(childrenNodesStart, queueGoal);
         console.log(overlap);
-        if (checkOverlap(visitedNodes[0], visitedNodes[1])) return visitedNodes;
+        startNode.previousNode = null;
+        if (checkOverlap(childrenNodesStart, queueGoal)) {
+            nearestNodeGoal.previousNode = null;
+            return visitedNodes;
+        }
         if (nearestNodeStart === goalNode) return visitedNodes;
         if (nearestNodeGoal === startNode) return visitedNodes;
         queueStart = new Set(queueStart);
         queueGoal = new Set(queueGoal);
         queueStart = Array.from(queueStart);
         queueGoal = Array.from(queueGoal);
+        startNode.previousNode = null;
     }
+
+    startNode.previousNode = null;
     return visitedNodes;
 }
 
@@ -105,10 +112,10 @@ function constructShortestPath(grid, startNode, goalNode, nodesStart, nodesGoal)
 
 function checkOverlap(nodesStart, nodesGoal) {
     //let goalNodes = new Set(nodesGoal);
-
-    for (let i = 0; i < nodesStart; i++) {
-        for (let j = 0; j < nodesGoal; j++) {
-            if (nodesStart[i].row === nodesGoal[j].row && nodesStart[i].column === (nodesGoal[j].column - 1)) {
+    for (let i = 0; i < nodesStart.length; i++) {
+        for (let j = 0; j < nodesGoal.length; j++) {
+            console.log(nodesStart[i]);
+            if (nodesStart[i].row === nodesGoal[j].row && nodesStart[i].column === (nodesGoal[j].column)) {
                 console.log(nodesStart[i]);
                 return true;
             }
