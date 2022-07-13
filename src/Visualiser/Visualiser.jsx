@@ -6,7 +6,6 @@ import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
 import {astar} from '../Algorithms/astar';
-import {ModalDialog} from '../Guide';
 import './Visualiser.css';
 
 let currentAlgo = null;
