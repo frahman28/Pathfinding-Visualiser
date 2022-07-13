@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
 import {START_NODE_COLUMN, START_NODE_ROW, GOAL_NODE_COLUMN, GOAL_NODE_ROW, reconstructGrid, reconstructGridWithWalls, makeGridWithWalls, getAllNodes, moveStartNode, moveGoalNode} from './GridUtil';
-import {dijkstra, makeShortestPath, makeShortestPathBD} from '../Algorithms/dijkstra';
+import {dijkstra, makeShortestPath} from '../Algorithms/dijkstra';
 import {bfs} from '../Algorithms/bfs';
 import {dfs} from '../Algorithms/dfs';
 import {greedy} from '../Algorithms/greedy';
@@ -49,7 +49,6 @@ export default class Visualiser extends Component {
     if (!this.state.mouseIsPressed) return;
     if (this.state.running || this.state.completed) return;
     let newGrid = this.state.fullGrid;
-    console.log(newGrid[row][column]);
     if (this.state.movingStart) {
         newGrid = moveStartNode(this.state.fullGrid, row, column);
     } else if (this.state.movingGoal) {
@@ -84,7 +83,6 @@ export default class Visualiser extends Component {
     const fullGrid = this.state.fullGrid;
     this.setState({running: true});
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
-    console.log(startNode);
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = dijkstra(fullGrid, startNode, goalNode);
     const shortestPath = makeShortestPath(goalNode);
@@ -111,7 +109,6 @@ export default class Visualiser extends Component {
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = bfs(fullGrid, startNode, goalNode);
     const shortestPath = makeShortestPath(goalNode);
-    console.log(shortestPath);
     for (let i = 0; i <= nodesVisited.length; i++) {
         if (i === nodesVisited.length) {
           setTimeout(() => {
@@ -157,9 +154,7 @@ export default class Visualiser extends Component {
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = greedy(fullGrid, startNode, goalNode);
-    console.log(nodesVisited);
     const shortestPath = makeShortestPath(goalNode);
-    console.log(shortestPath);
     for (let i = 0; i <= nodesVisited.length; i++) {
         if (i === nodesVisited.length) {
           setTimeout(() => {
@@ -182,9 +177,7 @@ export default class Visualiser extends Component {
     let startNode = fullGrid[START_NODE_ROW][START_NODE_COLUMN];
     let goalNode = fullGrid[GOAL_NODE_ROW][GOAL_NODE_COLUMN];
     const nodesVisited = astar(fullGrid, startNode, goalNode);
-    console.log(nodesVisited);
     const shortestPath = makeShortestPath(goalNode);
-    console.log(shortestPath);
     for (let i = 0; i <= nodesVisited.length; i++) {
         if (i === nodesVisited.length) {
           setTimeout(() => {
@@ -233,8 +226,6 @@ export default class Visualiser extends Component {
 
     const grid = this.state.fullGrid;
 
-    let count = 0;
-
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
         if (grid[i][j].isWall) {
@@ -243,15 +234,10 @@ export default class Visualiser extends Component {
             isWall: false
           }
           grid[i][j] = node;
-          count++;
         }
       }
     }
-
-
     this.generateMap();
-
-    console.log(count);
   }
 
   generateMap() {
@@ -261,7 +247,6 @@ export default class Visualiser extends Component {
       for (let column = 0; column < grid[row].length; column++) {
         let chance = Math.floor(Math.random() * (11 - 1 + 1) + 1);
         if (chance === 10 || chance === 9) {
-          console.log(row, column);
           makeGridWithWalls(this.state.fullGrid, row, column);
         }
       }
@@ -282,7 +267,6 @@ export default class Visualiser extends Component {
       alert("Select Clear Type");
       return;
     }
-    console.log(fullGrid);
     currentAlgo = null;
     for (let i = 0; i < resetGrid.length; i++) {
         if (resetGrid[i].isWall) {

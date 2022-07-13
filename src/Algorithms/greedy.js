@@ -1,19 +1,13 @@
 export function greedy(grid, startNode, goalNode) {
     const visitedNodes = [];
     startNode.distance = heuristic(grid, startNode, goalNode);
-    console.log(startNode);
     let queue = [startNode];
     while (queue.length !== 0) {
-        //console.log(queue);
         let nearestNode = queue.shift();
-        //console.log(nearestNode);
         if (nearestNode.isWall) continue;
         if (nearestNode.isVisited) continue;
         let childrenNodes = getNearestNodes(nearestNode, grid, goalNode, queue);
-        //childrenNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-        console.log(childrenNodes);
         queue = childrenNodes.concat(queue);
-        //queue = queue.concat(childrenNodes);
         nearestNode.isVisited = true;
         visitedNodes.push(nearestNode);
         if (nearestNode === goalNode) return visitedNodes;

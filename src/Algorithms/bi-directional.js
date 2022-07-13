@@ -21,7 +21,6 @@ export function expandBoth(grid, startNode, goalNode) {
         visitedNodes[0].push(nearestNodeStart);
         visitedNodes[1].push(nearestNodeGoal);
         let overlap = checkOverlap(childrenNodesStart, queueGoal);
-        console.log(overlap);
         startNode.previousNode = null;
         if (checkOverlap(childrenNodesStart, queueGoal)) {
             nearestNodeGoal.previousNode = null;
@@ -89,7 +88,6 @@ function getNearestNodes(node, grid, allVisited) {
     let visited = new Set(allVisited);
     for (const neighbour of neighbours) {
         if (visited.has(neighbour)) {
-            console.log(neighbour);
             continue;
         }
         neighbour.previousNode = node;
@@ -111,21 +109,13 @@ function constructShortestPath(grid, startNode, goalNode, nodesStart, nodesGoal)
 }
 
 function checkOverlap(nodesStart, nodesGoal) {
-    //let goalNodes = new Set(nodesGoal);
     for (let i = 0; i < nodesStart.length; i++) {
         for (let j = 0; j < nodesGoal.length; j++) {
-            console.log(nodesStart[i]);
             if (nodesStart[i].row === nodesGoal[j].row && nodesStart[i].column === (nodesGoal[j].column)) {
                 console.log(nodesStart[i]);
                 return true;
             }
         }
-        /*
-        if (goalNodes.has(nodesStart[i])) {
-            console.log(nodesStart[i]);
-            return true;
-        } 
-        */
     }
     return false;
 }
