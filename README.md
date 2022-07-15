@@ -1,4 +1,4 @@
-# Pathfinding Algorithm Visualiser
+# Pathfinding Algorithm Visualiser (NOT FINISHED)
 The purpose of this project was to develop my skill with using JavaScript, HTML, CSS, Bootstrap and React while also learning more about different algorithms and data structures. The visualiser can be used at: https://frahman28.github.io/Pathfinding-Visualiser/
 
 Algorithms Implemented:
